@@ -7,22 +7,22 @@ pipeline {
 
     stages {
 
-        stage('Install Dependencies'){
-            steps{
+        stage('Install Dependencies') {
+            steps {
                 sh 'npm install'
-            }    
-        }
-        stage('Build Project'){
-            steps{
-                sh 'npm run build'
-        }
-
-        }
-        stage('Archive Project'){
-            steps{
-                sh archiveArtifacts artifacts: 'dist/**', fingerprint: true
             }
         }
-        
+
+        stage('Build Project') {
+            steps {
+                sh 'npm run build'
+            }
+        }
+
+        stage('Archive Build') {
+            steps {
+                archiveArtifacts artifacts: 'dist/**', fingerprint: true
+            }
+        }
     }
 }
