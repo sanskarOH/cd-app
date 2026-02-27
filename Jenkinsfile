@@ -5,6 +5,11 @@ pipeline {
         nodejs 'Node18'
     }
 
+    environment {
+        NETLIFY_AUTH_TOKEN = credentials('NETLIFY_AUTH_TOKEN')
+        NETLIFY_SITE_ID = credentials('NETLIFY_SITE_ID')
+    }
+
     stages {
 
         stage('Install Dependencies') {
@@ -19,9 +24,21 @@ pipeline {
             }
         }
 
-        stage('Archive Build') {
+        stage('Install Netlify CLI') {
             steps {
-                archiveArtifacts artifacts: 'dist/**', fingerprint: true
+                sh 'npm install -g netlify-cli'
+            }
+        }
+
+        stage('Deploy to Netlify') {
+            steps {
+                sh '''
+                netlify deploy \
+                --dir=dist \
+                --prod \
+                --site=$NETLIFY_SITE_ID \
+                --auth=$NETLIFY_AUTH_TOKEN
+                '''
             }
         }
     }
